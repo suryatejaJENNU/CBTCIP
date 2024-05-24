@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" contetn="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherVue | CBTCIP</title>
+    <link rel="stylesheet" href="./Weatherstyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="icon" type="image/png" href="./Weatherimages/favi.png">
+</head>
+<body>
+    <div class="container">
+        <h3>WEATHERVUE</h3>
+        <div class="search">
+            <input type="text" placeholder="Enter the City">
+            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="error">
+            <p>Invalid City name</p>
+        </div>
+        <div class="weather">
+            <img src="./Weatherimages/rain.png" class="icon" alt="">
+            <h1 class="celcius">22°C</h1>
+            <h2 class="city">London</h2>
+            <div class="detail">
+                <div class="col">
+                    <i class="fa-solid fa-water"></i>
+                                        <div class="humidity">
+                        <p class="humidityP">20%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <i class="fa-solid fa-wind"></i>
+                    <div class="wind">
+                        <p class="windS">20km/h</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.querySelector('.search input');
+        const searchBtn = document.querySelector('.search button');
+        const image = document.querySelector('.icon');
+
+        async function getWeather(city) {
+            var res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=82834b9fdf782be5358dd9469ba43b59&units=metric`);
+            if(res.status == 404) {
+                document.querySelector('.error').style.display = "block";
+            } else {
+                document.querySelector('.error').style.display = "none";
+            }
+            var data = await res.json();
+            console.log(data);
+            document.querySelector('.celcius').innerHTML = Math.round(data.main.temp) + "°C";
+            document.querySelector('.city').innerHTML = data.name;
+            document.querySelector('.humidityP').innerHTML = Math.round(data.main.humidity) + "%";
+            document.querySelector('.windS').innerHTML = Math.round(data.wind.speed) + "km/h";
+
+            if(data.weather[0].main == "Clouds") {
+                image.src = "./Weatherimages/clouds.png"
+            }else if(data.weather[0].main == "Clear") {
+                image.src = "./Weatherimages/clear.png"
+            }else if(data.weather[0].main == "Rain") {
+                image.src = "./Weatherimages/rain.png"
+            }else if(data.weather[0].main == "Haze") {
+                image.src = "./Weatherimages/mist.png"
+            }else if(data.weather[0].main == "Mist") {
+                image.src = "./Weatherimages/mist.png"
+            }
+
+            
+        }
+
+        searchBtn.addEventListener('click', () => {
+            getWeather(searchInput.value);
+        })
+        
+    </script>
+</body>
+</html>
